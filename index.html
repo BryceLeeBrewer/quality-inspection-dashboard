@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quality Inspection Dashboard</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; }
+    .header { background: #0f172a; border-bottom: 2px solid #10b981; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .header h1 { font-size: 18px; font-weight: 700; color: #f1f5f9; }
+    .header-right { text-align: right; }
+    .header-right .updated { font-size: 12px; color: #94a3b8; }
+    .tabs { display: flex; padding: 0 24px; border-bottom: 1px solid #e2e8f0; background: #fff; }
+    .tab { padding: 12px 20px; cursor: pointer; font-size: 13px; font-weight: 500; color: #64748b; border-bottom: 2px solid transparent; margin-bottom: -1px; user-select: none; }
+    .tab.active { color: #10b981; border-bottom-color: #10b981; font-weight: 600; }
+    .tab:hover:not(.active) { color: #374151; }
+    .tab-count { display: inline-block; background: #f1f5f9; color: #64748b; border-radius: 99px; font-size: 10px; font-weight: 700; padding: 1px 7px; margin-left: 5px; }
+    .tab.active .tab-count { background: #d1fae5; color: #065f46; }
+    .tab-content { display: none; padding: 22px 24px; }
+    .tab-content.active { display: block; }
+    .controls { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .controls input, .controls select { font-size: 12px; padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 7px; background: #fff; color: #374151; outline: none; }
+    .controls input { width: 240px; }
+    .controls input:focus, .controls select:focus { border-color: #10b981; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; }
+    table th { background: #f8fafc; padding: 9px 12px; text-align: left; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; cursor: pointer; user-select: none; }
+    table th:hover { background: #f1f5f9; }
+    table th .sort-icon { opacity: 0.4; margin-left: 4px; }
+    table th.sort-asc .sort-icon::after { content: ' ▲'; opacity: 1; }
+    table th.sort-desc .sort-icon::after { content: ' ▼'; opacity: 1; }
+    table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    table tr:last-child td { border-bottom: none; }
+    table tbody tr:hover td { background: #f8fafc; }
+    .table-wrap { overflow-x: auto; }
+    .mono { font-family: 'SF Mono', 'Consolas', 'Monaco', monospace; font-size: 12px; }
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; }
+    .stale-green { background: #dcfce7; color: #166534; }
+    .stale-blue  { background: #dbeafe; color: #1e40af; }
+    .stale-amber { background: #fef3c7; color: #92400e; }
+    .stale-red   { background: #fee2e2; color: #991b1b; }
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+    .s-pending-receipt { background: #eff6ff; color: #1d4ed8; }
+    .s-partially-received { background: #fef3c7; color: #92400e; }
+    .s-pending-billing { background: #f0fdf4; color: #166534; }
+    .s-default { background: #f1f5f9; color: #475569; }
+    .jira-link { display: inline-block; padding: 2px 8px; border-radius: 6px; background: #eff6ff; color: #1d4ed8; font-size: 11px; font-weight: 700; text-decoration: none; }
+    .jira-link:hover { background: #dbeafe; }
+    .jira-none { color: #94a3b8; }
+    .bin-fai { background: #f5f3ff; color: #6d28d9; }
+    .bin-insp { background: #fef3c7; color: #92400e; }
+    .date-red { color: #dc2626; font-weight: 600; }
+    .date-amber { color: #d97706; font-weight: 600; }
+    .empty-state { text-align: center; padding: 60px 24px; color: #94a3b8; }
+    .empty-state h3 { font-size: 16px; margin-bottom: 6px; color: #64748b; }
+    .loading { text-align: center; padding: 60px 24px; }
+    .spinner { display: inline-block; width: 28px; height: 28px; border: 3px solid #e2e8f0; border-top-color: #10b981; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-banner { background: #fee2e2; border: 1px solid #fecaca; border-radius: 8px; padding: 14px 18px; margin: 20px 24px; color: #991b1b; font-size: 13px; }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>Quality Inspection Dashboard</h1>
+    <div style="font-size:11px;color:#64748b;margin-top:3px;">Grace Technologies &middot; Quality Control</div>
+  </div>
+  <div class="header-right"><p class="updated" id="last-updated">Loading…</p></div>
+</div>
+<div class="tabs">
+  <div class="tab active" onclick="showTab('hold')" id="tab-hold">Hold Bins — Awaiting Inspection <span class="tab-count" id="count-hold">—</span></div>
+  <div class="tab" onclick="showTab('incoming')" id="tab-incoming">Incoming POs — Inspection Required <span class="tab-count" id="count-incoming">—</span></div>
+</div>
+<div class="tab-content active" id="pane-hold">
+  <div id="loading-hold" class="loading"><div class="spinner"></div></div>
+  <div id="content-hold" style="display:none">
+    <div class="controls">
+      <input type="text" id="search-hold" placeholder="Search item, description…" oninput="renderHold()">
+      <select id="filter-bin" onchange="renderHold()"><option value="">All Bins</option><option value="HOLD for Inspection">HOLD for Inspection</option><option value="HOLD for FAI">HOLD for FAI</option></select>
+    </div>
+    <div class="table-wrap"><table id="table-hold"><thead><tr>
+      <th onclick="sortHold('bin')">Bin <span class="sort-icon"></span></th>
+      <th onclick="sortHold('itemId')">Item Number <span class="sort-icon"></span></th>
+      <th onclick="sortHold('description')">Description <span class="sort-icon"></span></th>
+      <th onclick="sortHold('qty')" style="text-align:right">Qty on Hand <span class="sort-icon"></span></th>
+      <th onclick="sortHold('received')">Date Received <span class="sort-icon"></span></th>
+      <th onclick="sortHold('daysInBin')">Days in Bin <span class="sort-icon"></span></th>
+      <th>Staleness</th><th>Jira Ticket</th>
+    </tr></thead><tbody id="body-hold"></tbody></table></div>
+    <div id="empty-hold" class="empty-state" style="display:none"><h3>No items match the current filters.</h3></div>
+  </div>
+</div>
+<div class="tab-content" id="pane-incoming">
+  <div id="loading-incoming" class="loading"><div class="spinner"></div></div>
+  <div id="content-incoming" style="display:none">
+    <div class="controls">
+      <input type="text" id="search-incoming" placeholder="Search PO, item, vendor…" oninput="renderIncoming()">
+      <select id="filter-status" onchange="renderIncoming()"><option value="">All Statuses</option></select>
+      <select id="filter-vendor" onchange="renderIncoming()"><option value="">All Vendors</option></select>
+    </div>
+    <div class="table-wrap"><table id="table-incoming"><thead><tr>
+      <th onclick="sortIncoming('poNumber')">PO Number <span class="sort-icon"></span></th>
+      <th onclick="sortIncoming('vendor')">Vendor <span class="sort-icon"></span></th>
+      <th onclick="sortIncoming('status')">Status <span class="sort-icon"></span></th>
+      <th onclick="sortIncoming('itemId')">Item Number <span class="sort-icon"></span></th>
+      <th onclick="sortIncoming('description')">Description <span class="sort-icon"></span></th>
+      <th onclick="sortIncoming('manufacturer')">Manufacturer <span class="sort-icon"></span></th>
+      <th onclick="sortIncoming('mpn')">MPN <span class="sort-icon"></span></th>
+      <th onclick="sortIncoming('qty')" style="text-align:right">Qty <span class="sort-icon"></span></th>
+      <th onclick="sortIncoming('entered')">Date Entered <span class="sort-icon"></span></th>
+      <th onclick="sortIncoming('receipt')">Expected Receipt <span class="sort-icon"></span></th>
+    </tr></thead><tbody id="body-incoming"></tbody></table></div>
+    <div id="empty-incoming" class="empty-state" style="display:none"><h3>No items match the current filters.</h3></div>
+  </div>
+</div>
+<script>
+let holdData=[],incomingData=[];
+let holdSort={col:'daysInBin',dir:'desc'};
+let incomingSort={col:'receipt',dir:'asc'};
+function showTab(n){['hold','incoming'].forEach(t=>{document.getElementById('pane-'+t).classList.toggle('active',t===n);document.getElementById('tab-'+t).classList.toggle('active',t===n);});}
+function daysBetween(ds){if(!ds)return null;const d=new Date(ds);if(isNaN(d))return null;const t=new Date();t.setHours(0,0,0,0);return Math.floor((t-d)/86400000);}
+function staleClass(d){if(d===null)return'stale-blue';if(d<=7)return'stale-green';if(d<=14)return'stale-blue';if(d<=21)return'stale-amber';return'stale-red';}
+function staleLabel(d){if(d===null)return'—';if(d<=7)return'≤ 7 days';if(d<=14)return'8–14 days';if(d<=21)return'15–21 days';return'> 21 days';}
+function binClass(b){if(!b)return'';return b.includes('FAI')?'bin-fai':'bin-insp';}
+function statusClass(s){if(!s)return's-default';const sl=s.toLowerCase();if(sl.includes('partial'))return's-partially-received';if(sl.includes('billing'))return's-pending-billing';if(sl.includes('pending'))return's-pending-receipt';return's-default';}
+function fmtDate(d){if(!d)return'—';const dt=new Date(d);if(isNaN(dt))return d;return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function rcClass(ds){if(!ds)return'';const d=new Date(ds);if(isNaN(d))return'';const t=new Date();t.setHours(0,0,0,0);const diff=Math.floor((d-t)/86400000);if(diff<0)return'date-red';if(diff<=7)return'date-amber';return'';}
+function sortHold(c){if(holdSort.col===c)holdSort.dir=holdSort.dir==='asc'?'desc':'asc';else{holdSort.col=c;holdSort.dir='asc';}renderHold();}
+function sortIncoming(c){if(incomingSort.col===c)incomingSort.dir=incomingSort.dir==='asc'?'desc':'asc';else{incomingSort.col=c;incomingSort.dir='asc';}renderIncoming();}
+function updHdrs(tid,ss){document.querySelectorAll('#'+tid+' th').forEach(th=>{th.classList.remove('sort-asc','sort-desc');const m=(th.getAttribute('onclick')||'').match(/'([^']+)'/);if(m&&m[1]===ss.col)th.classList.add(ss.dir==='asc'?'sort-asc':'sort-desc');});}
+function renderHold(){const q=(document.getElementById('search-hold').value||'').toLowerCase();const bf=document.getElementById('filter-bin').value;
+let rows=holdData.map(r=>({...r,daysInBin:daysBetween(r.received)}));
+if(q)rows=rows.filter(r=>(r.itemId||'').toLowerCase().includes(q)||(r.description||'').toLowerCase().includes(q));
+if(bf)rows=rows.filter(r=>(r.bin||'')=== bf);
+rows.sort((a,b)=>{let av=a[holdSort.col],bv=b[holdSort.col];if(av==null)av=holdSort.dir==='asc'?Infinity:-Infinity;if(bv==null)bv=holdSort.dir==='asc'?Infinity:-Infinity;if(typeof av==='string')av=av.toLowerCase();if(typeof bv==='string')bv=bv.toLowerCase();return holdSort.dir==='asc'?(av>bv?1:-1):(av<bv?1:-1);});
+const body=document.getElementById('body-hold'),empty=document.getElementById('empty-hold');
+if(!rows.length){body.innerHTML='';empty.style.display='';return;}empty.style.display='none';
+body.innerHTML=rows.map(r=>{const days=r.daysInBin;const jira=r.jiraKey?'<a class="jira-link" href="https://percev.atlassian.net/browse/'+r.jiraKey+'" target="_blank">'+r.jiraKey+' ↗</a>':'<span class="jira-none">—</span>';
+return'<tr><td><span class="badge '+binClass(r.bin)+'">'+( r.bin||'—')+'</span></td><td class="mono">'+( r.itemId||'—')+'</td><td>'+( r.description||'—')+'</td><td style="text-align:right">'+( r.qty??'')+'</td><td>'+fmtDate(r.received)+'</td><td style="text-align:right">'+( days!==null?days:'—')+'</td><td><span class="badge '+staleClass(days)+'">'+staleLabel(days)+'</span></td><td>'+jira+'</td></tr>';}).join('');
+updHdrs('table-hold',holdSort);}
+function popFilters(){const sts=[...new Set(incomingData.map(r=>r.status).filter(Boolean))].sort();const vns=[...new Set(incomingData.map(r=>r.vendor).filter(Boolean))].sort();
+document.getElementById('filter-status').innerHTML='<option value="">All Statuses</option>'+sts.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
+document.getElementById('filter-vendor').innerHTML='<option value="">All Vendors</option>'+vns.map(v=>'<option value="'+v+'">'+v+'</option>').join('');}
+function renderIncoming(){const q=(document.getElementById('search-incoming').value||'').toLowerCase();const sf=document.getElementById('filter-status').value;const vf=document.getElementById('filter-vendor').value;
+let rows=[...incomingData];
+if(q)rows=rows.filter(r=>(r.poNumber||'').toLowerCase().includes(q)||(r.itemId||'').toLowerCase().includes(q)||(r.vendor||'').toLowerCase().includes(q)||(r.description||'').toLowerCase().includes(q));
+if(sf)rows=rows.filter(r=>r.status===sf);if(vf)rows=rows.filter(r=>r.vendor===vf);
+rows.sort((a,b)=>{let av=a[incomingSort.col],bv=b[incomingSort.col];const nd=incomingSort.dir==='asc'?1:-1;if(!av&&!bv)return 0;if(!av)return nd;if(!bv)return -nd;if(typeof av==='string')av=av.toLowerCase();if(typeof bv==='string')bv=bv.toLowerCase();return incomingSort.dir==='asc'?(av>bv?1:-1):(av<bv?1:-1);});
+const body=document.getElementById('body-incoming'),empty=document.getElementById('empty-incoming');
+if(!rows.length){body.innerHTML='';empty.style.display='';return;}empty.style.display='none';
+body.innerHTML=rows.map(r=>'<tr><td class="mono">'+( r.poNumber||'—')+'</td><td>'+( r.vendor||'—')+'</td><td><span class="status-badge '+statusClass(r.status)+'">'+( r.status||'—')+'</span></td><td class="mono">'+( r.itemId||'—')+'</td><td>'+( r.description||'—')+'</td><td>'+( r.manufacturer||'—')+'</td><td class="mono">'+( r.mpn||'—')+'</td><td style="text-align:right">'+( r.qty??'')+'</td><td>'+fmtDate(r.entered)+'</td><td class="'+rcClass(r.receipt)+'">'+fmtDate(r.receipt)+'</td></tr>').join('');
+updHdrs('table-incoming',incomingSort);}
+async function loadData(){try{const resp=await fetch('./data.json?_='+Date.now());if(!resp.ok)throw new Error('HTTP '+resp.status);const data=await resp.json();
+document.getElementById('last-updated').textContent='Last updated: '+(data.generated||'unknown');
+holdData=data.holdBins||[];incomingData=data.incomingPOs||[];
+document.getElementById('count-hold').textContent=holdData.length;
+document.getElementById('count-incoming').textContent=incomingData.length;
+document.getElementById('loading-hold').style.display='none';document.getElementById('content-hold').style.display='';
+renderHold();
+document.getElementById('loading-incoming').style.display='none';document.getElementById('content-incoming').style.display='';
+popFilters();renderIncoming();
+}catch(err){['hold','incoming'].forEach(t=>{document.getElementById('loading-'+t).style.display='none';});document.getElementById('pane-hold').insertAdjacentHTML('afterbegin','<div class="error-banner">Failed to load data.json: '+err.message+'.</div>');}}
+loadData();
+</script>
+</body>
+</html>
