@@ -119,6 +119,7 @@ let holdData=[],incomingData=[];
 let holdSort={col:'daysInBin',dir:'desc'};
 let incomingSort={col:'receipt',dir:'asc'};
 function showTab(n){['hold','incoming'].forEach(t=>{document.getElementById('pane-'+t).classList.toggle('active',t===n);document.getElementById('tab-'+t).classList.toggle('active',t===n);});}
+function parseDate(s){if(!s)return null;const d=new Date(s);return isNaN(d)?null:d.getTime();}
 function daysBetween(ds){if(!ds)return null;const d=new Date(ds);if(isNaN(d))return null;const t=new Date();t.setHours(0,0,0,0);return Math.floor((t-d)/86400000);}
 function staleClass(d){if(d===null)return'stale-blue';if(d<=7)return'stale-green';if(d<=14)return'stale-blue';if(d<=21)return'stale-amber';return'stale-red';}
 function staleLabel(d){if(d===null)return'—';if(d<=7)return'≤ 7 days';if(d<=14)return'8–14 days';if(d<=21)return'15–21 days';return'> 21 days';}
@@ -133,7 +134,11 @@ function renderHold(){const q=(document.getElementById('search-hold').value||'')
 let rows=holdData.map(r=>({...r,daysInBin:daysBetween(r.received)}));
 if(q)rows=rows.filter(r=>(r.itemId||'').toLowerCase().includes(q)||(r.description||'').toLowerCase().includes(q));
 if(bf)rows=rows.filter(r=>(r.bin||'')=== bf);
-rows.sort((a,b)=>{let av=a[holdSort.col],bv=b[holdSort.col];if(av==null)av=holdSort.dir==='asc'?Infinity:-Infinity;if(bv==null)bv=holdSort.dir==='asc'?Infinity:-Infinity;if(typeof av==='string')av=av.toLowerCase();if(typeof bv==='string')bv=bv.toLowerCase();return holdSort.dir==='asc'?(av>bv?1:-1):(av<bv?1:-1);});
+rows.sort((a,b)=>{let av=a[holdSort.col],bv=b[holdSort.col];
+if(['received'].includes(holdSort.col)){av=parseDate(av);bv=parseDate(bv);}
+if(av==null)av=holdSort.dir==='asc'?Infinity:-Infinity;if(bv==null)bv=holdSort.dir==='asc'?Infinity:-Infinity;
+if(typeof av==='string')av=av.toLowerCase();if(typeof bv==='string')bv=bv.toLowerCase();
+return holdSort.dir==='asc'?(av>bv?1:-1):(av<bv?1:-1);});
 const body=document.getElementById('body-hold'),empty=document.getElementById('empty-hold');
 if(!rows.length){body.innerHTML='';empty.style.display='';return;}empty.style.display='none';
 body.innerHTML=rows.map(r=>{const days=r.daysInBin;const jira=r.jiraKey?'<a class="jira-link" href="https://percev.atlassian.net/browse/'+r.jiraKey+'" target="_blank">'+r.jiraKey+' ↗</a>':'<span class="jira-none">—</span>';
@@ -146,7 +151,12 @@ function renderIncoming(){const q=(document.getElementById('search-incoming').va
 let rows=[...incomingData];
 if(q)rows=rows.filter(r=>(r.poNumber||'').toLowerCase().includes(q)||(r.itemId||'').toLowerCase().includes(q)||(r.vendor||'').toLowerCase().includes(q)||(r.description||'').toLowerCase().includes(q));
 if(sf)rows=rows.filter(r=>r.status===sf);if(vf)rows=rows.filter(r=>r.vendor===vf);
-rows.sort((a,b)=>{let av=a[incomingSort.col],bv=b[incomingSort.col];const nd=incomingSort.dir==='asc'?1:-1;if(!av&&!bv)return 0;if(!av)return nd;if(!bv)return -nd;if(typeof av==='string')av=av.toLowerCase();if(typeof bv==='string')bv=bv.toLowerCase();return incomingSort.dir==='asc'?(av>bv?1:-1):(av<bv?1:-1);});
+rows.sort((a,b)=>{let av=a[incomingSort.col],bv=b[incomingSort.col];
+if(['receipt','entered'].includes(incomingSort.col)){av=parseDate(av);bv=parseDate(bv);}
+const nd=incomingSort.dir==='asc'?1:-1;
+if(av==null&&bv==null)return 0;if(av==null)return nd;if(bv==null)return -nd;
+if(typeof av==='string')av=av.toLowerCase();if(typeof bv==='string')bv=bv.toLowerCase();
+return incomingSort.dir==='asc'?(av>bv?1:-1):(av<bv?1:-1);});
 const body=document.getElementById('body-incoming'),empty=document.getElementById('empty-incoming');
 if(!rows.length){body.innerHTML='';empty.style.display='';return;}empty.style.display='none';
 body.innerHTML=rows.map(r=>'<tr><td class="mono">'+( r.poNumber||'—')+'</td><td>'+( r.vendor||'—')+'</td><td><span class="status-badge '+statusClass(r.status)+'">'+( r.status||'—')+'</span></td><td class="mono">'+( r.itemId||'—')+'</td><td>'+( r.description||'—')+'</td><td>'+( r.manufacturer||'—')+'</td><td class="mono">'+( r.mpn||'—')+'</td><td style="text-align:right">'+( r.qty??'')+'</td><td>'+fmtDate(r.entered)+'</td><td class="'+rcClass(r.receipt)+'">'+fmtDate(r.receipt)+'</td></tr>').join('');
