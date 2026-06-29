@@ -76,11 +76,12 @@
   <div id="loading-hold" class="loading"><div class="spinner"></div></div>
   <div id="content-hold" style="display:none">
     <div class="controls">
-      <input type="text" id="search-hold" placeholder="Search item, description…" oninput="renderHold()">
+      <input type="text" id="search-hold" placeholder="Search item, PO, description…" oninput="renderHold()">
       <select id="filter-bin" onchange="renderHold()"><option value="">All Bins</option><option value="HOLD for Inspection">HOLD for Inspection</option><option value="HOLD for FAI">HOLD for FAI</option></select>
     </div>
     <div class="table-wrap"><table id="table-hold"><thead><tr>
       <th onclick="sortHold('bin')">Bin <span class="sort-icon"></span></th>
+      <th onclick="sortHold('poNumber')">PO Number <span class="sort-icon"></span></th>
       <th onclick="sortHold('itemId')">Item Number <span class="sort-icon"></span></th>
       <th onclick="sortHold('description')">Description <span class="sort-icon"></span></th>
       <th onclick="sortHold('qty')" style="text-align:right">Qty on Hand <span class="sort-icon"></span></th>
@@ -132,7 +133,7 @@ function sortIncoming(c){if(incomingSort.col===c)incomingSort.dir=incomingSort.d
 function updHdrs(tid,ss){document.querySelectorAll('#'+tid+' th').forEach(th=>{th.classList.remove('sort-asc','sort-desc');const m=(th.getAttribute('onclick')||'').match(/'([^']+)'/);if(m&&m[1]===ss.col)th.classList.add(ss.dir==='asc'?'sort-asc':'sort-desc');});}
 function renderHold(){const q=(document.getElementById('search-hold').value||'').toLowerCase();const bf=document.getElementById('filter-bin').value;
 let rows=holdData.map(r=>({...r,daysInBin:daysBetween(r.received)}));
-if(q)rows=rows.filter(r=>(r.itemId||'').toLowerCase().includes(q)||(r.description||'').toLowerCase().includes(q));
+if(q)rows=rows.filter(r=>(r.itemId||'').toLowerCase().includes(q)||(r.description||'').toLowerCase().includes(q)||(r.poNumber||'').toLowerCase().includes(q));
 if(bf)rows=rows.filter(r=>(r.bin||'')=== bf);
 rows.sort((a,b)=>{let av=a[holdSort.col],bv=b[holdSort.col];
 if(['received'].includes(holdSort.col)){av=parseDate(av);bv=parseDate(bv);}
@@ -142,7 +143,7 @@ return holdSort.dir==='asc'?(av>bv?1:-1):(av<bv?1:-1);});
 const body=document.getElementById('body-hold'),empty=document.getElementById('empty-hold');
 if(!rows.length){body.innerHTML='';empty.style.display='';return;}empty.style.display='none';
 body.innerHTML=rows.map(r=>{const days=r.daysInBin;const jira=r.jiraKey?'<a class="jira-link" href="https://percev.atlassian.net/browse/'+r.jiraKey+'" target="_blank">'+r.jiraKey+' ↗</a>':'<span class="jira-none">—</span>';
-return'<tr><td><span class="badge '+binClass(r.bin)+'">'+( r.bin||'—')+'</span></td><td class="mono">'+( r.itemId||'—')+'</td><td>'+( r.description||'—')+'</td><td style="text-align:right">'+( r.qty??'')+'</td><td>'+fmtDate(r.received)+'</td><td style="text-align:right">'+( days!==null?days:'—')+'</td><td><span class="badge '+staleClass(days)+'">'+staleLabel(days)+'</span></td><td>'+jira+'</td></tr>';}).join('');
+return'<tr><td><span class="badge '+binClass(r.bin)+'">'+( r.bin||'—')+'</span></td><td class="mono">'+( r.poNumber||'—')+'</td><td class="mono">'+( r.itemId||'—')+'</td><td>'+( r.description||'—')+'</td><td style="text-align:right">'+( r.qty??'')+'</td><td>'+fmtDate(r.received)+'</td><td style="text-align:right">'+( days!==null?days:'—')+'</td><td><span class="badge '+staleClass(days)+'">'+staleLabel(days)+'</span></td><td>'+jira+'</td></tr>';}).join('');
 updHdrs('table-hold',holdSort);}
 function popFilters(){const sts=[...new Set(incomingData.map(r=>r.status).filter(Boolean))].sort();const vns=[...new Set(incomingData.map(r=>r.vendor).filter(Boolean))].sort();
 document.getElementById('filter-status').innerHTML='<option value="">All Statuses</option>'+sts.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
