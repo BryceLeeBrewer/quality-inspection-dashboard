@@ -1,5 +1,5 @@
 {
-  "generated": "June 29, 2026 9:38 AM CDT",
+  "generated": "June 30, 2026 9:08 AM CDT",
   "holdBins": [
     {
       "bin": "HOLD for FAI",
@@ -36,15 +36,6 @@
       "received": "6/5/2026",
       "poNumber": "PO26000349",
       "jiraKey": "PS-1407"
-    },
-    {
-      "bin": "HOLD for Inspection",
-      "itemId": "Z-720-CLTH-WL2PF",
-      "description": "Li-SOCI2 8.5 Ah C Cell battery w/ lead wires 2 pin Female connector",
-      "qty": 200,
-      "received": "5/27/2026",
-      "poNumber": "PO26000303",
-      "jiraKey": "PS-1408"
     },
     {
       "bin": "HOLD for Inspection",
@@ -86,6 +77,18 @@
       "qty": 30,
       "entered": "1/5/2026",
       "receipt": "3/2/2026"
+    },
+    {
+      "poNumber": "PO26000303",
+      "vendor": "Battery Store, Inc.",
+      "status": "Pending Bill",
+      "itemId": "Z-720-CLTH-WL2PF",
+      "description": "Li-SOCI2 8.5 Ah C Cell battery w/ lead wires 2 pin Female connector",
+      "manufacturer": null,
+      "mpn": "LS26500-ACC",
+      "qty": 200,
+      "entered": "4/21/2026",
+      "receipt": "5/26/2026"
     },
     {
       "poNumber": "PO26000309",
