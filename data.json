@@ -1,5 +1,5 @@
 {
-  "generated": "June 30, 2026 9:08 AM CDT",
+  "generated": "July 1, 2026 9:10 AM CDT",
   "holdBins": [
     {
       "bin": "HOLD for FAI",
@@ -8,7 +8,9 @@
       "qty": 1,
       "received": "6/26/2026",
       "poNumber": "PO26000307",
-      "jiraKey": "PS-1404"
+      "jiraKey": "PS-1404",
+      "avail": 5,
+      "rate_per_month": 10.8
     },
     {
       "bin": "HOLD for FAI",
@@ -17,7 +19,9 @@
       "qty": 1,
       "received": "6/19/2026",
       "poNumber": "PO26000307",
-      "jiraKey": "PS-1405"
+      "jiraKey": "PS-1405",
+      "avail": 0,
+      "rate_per_month": null
     },
     {
       "bin": "HOLD for Inspection",
@@ -26,7 +30,9 @@
       "qty": 480,
       "received": "6/5/2026",
       "poNumber": "PO26000349",
-      "jiraKey": "PS-1406"
+      "jiraKey": "PS-1406",
+      "avail": 83,
+      "rate_per_month": 27.6
     },
     {
       "bin": "HOLD for Inspection",
@@ -35,7 +41,9 @@
       "qty": 480,
       "received": "6/5/2026",
       "poNumber": "PO26000349",
-      "jiraKey": "PS-1407"
+      "jiraKey": "PS-1407",
+      "avail": 53,
+      "rate_per_month": 27.6
     },
     {
       "bin": "HOLD for Inspection",
@@ -44,7 +52,9 @@
       "qty": 4420,
       "received": "1/9/2026",
       "poNumber": "PO25000481",
-      "jiraKey": "PS-1409"
+      "jiraKey": "PS-1409",
+      "avail": 1004,
+      "rate_per_month": 136.3
     },
     {
       "bin": "HOLD for Inspection",
@@ -53,7 +63,9 @@
       "qty": 5020,
       "received": "1/9/2026",
       "poNumber": "PO25000482",
-      "jiraKey": "PS-1410"
+      "jiraKey": "PS-1410",
+      "avail": 0,
+      "rate_per_month": null
     },
     {
       "bin": "HOLD for Inspection",
@@ -62,7 +74,9 @@
       "qty": 5020,
       "received": "1/9/2026",
       "poNumber": "PO25000482",
-      "jiraKey": "PS-1411"
+      "jiraKey": "PS-1411",
+      "avail": 0,
+      "rate_per_month": null
     }
   ],
   "incomingPOs": [
@@ -77,18 +91,6 @@
       "qty": 30,
       "entered": "1/5/2026",
       "receipt": "3/2/2026"
-    },
-    {
-      "poNumber": "PO26000303",
-      "vendor": "Battery Store, Inc.",
-      "status": "Pending Bill",
-      "itemId": "Z-720-CLTH-WL2PF",
-      "description": "Li-SOCI2 8.5 Ah C Cell battery w/ lead wires 2 pin Female connector",
-      "manufacturer": null,
-      "mpn": "LS26500-ACC",
-      "qty": 200,
-      "entered": "4/21/2026",
-      "receipt": "5/26/2026"
     },
     {
       "poNumber": "PO26000309",
@@ -117,31 +119,7 @@
     {
       "poNumber": "PO26000405",
       "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
-      "status": "Pending Receipt",
-      "itemId": "Z-100-PESD-R-AVT-BODY1-4WIRE",
-      "description": "AVT 4WIRE BODY BOARD 1",
-      "manufacturer": null,
-      "mpn": null,
-      "qty": 100,
-      "entered": "6/1/2026",
-      "receipt": "6/27/2026"
-    },
-    {
-      "poNumber": "PO26000405",
-      "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
-      "status": "Pending Receipt",
-      "itemId": "Z-100-PESD-R-AVT-BODY2-AC",
-      "description": "AVT AC BODY BOARD 2",
-      "manufacturer": null,
-      "mpn": null,
-      "qty": 100,
-      "entered": "6/1/2026",
-      "receipt": "6/27/2026"
-    },
-    {
-      "poNumber": "PO26000405",
-      "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
-      "status": "Pending Receipt",
+      "status": "Pending Billing/Partially Received",
       "itemId": "Z-100-PESD-R-AVT-HEAD",
       "description": "AVT HEAD BOARD",
       "manufacturer": null,
@@ -153,7 +131,7 @@
     {
       "poNumber": "PO26000405",
       "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
-      "status": "Pending Receipt",
+      "status": "Pending Billing/Partially Received",
       "itemId": "Z-100-PESD-VCI-HC",
       "description": "VOLTAGE SOURCE LINE TERMINATION HIGH CURRENT BOARD",
       "manufacturer": null,
@@ -165,9 +143,33 @@
     {
       "poNumber": "PO26000405",
       "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
-      "status": "Pending Receipt",
+      "status": "Pending Billing/Partially Received",
       "itemId": "Z-100-PESD-VCI-LC",
       "description": "VOLTAGE SOURCE LINE TERMINATION LOW CURRENT BOARD",
+      "manufacturer": null,
+      "mpn": null,
+      "qty": 100,
+      "entered": "6/1/2026",
+      "receipt": "6/27/2026"
+    },
+    {
+      "poNumber": "PO26000405",
+      "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
+      "status": "Pending Billing/Partially Received",
+      "itemId": "Z-100-PESD-R-AVT-BODY2-AC",
+      "description": "AVT AC BODY BOARD 2",
+      "manufacturer": null,
+      "mpn": null,
+      "qty": 100,
+      "entered": "6/1/2026",
+      "receipt": "6/27/2026"
+    },
+    {
+      "poNumber": "PO26000405",
+      "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
+      "status": "Pending Billing/Partially Received",
+      "itemId": "Z-100-PESD-R-AVT-BODY1-4WIRE",
+      "description": "AVT 4WIRE BODY BOARD 1",
       "manufacturer": null,
       "mpn": null,
       "qty": 100,
@@ -190,32 +192,8 @@
       "poNumber": "PO26000421",
       "vendor": "OnBoard Circuits, Inc",
       "status": "Pending Receipt",
-      "itemId": "Z-100-PESD-R-AVT-BODY1-4WIRE",
-      "description": "AVT 4WIRE BODY BOARD 1",
-      "manufacturer": null,
-      "mpn": null,
-      "qty": 5,
-      "entered": "6/3/2026",
-      "receipt": "6/30/2026"
-    },
-    {
-      "poNumber": "PO26000421",
-      "vendor": "OnBoard Circuits, Inc",
-      "status": "Pending Receipt",
       "itemId": "Z-100-PESD-VCI-LC",
       "description": "VOLTAGE SOURCE LINE TERMINATION LOW CURRENT BOARD",
-      "manufacturer": null,
-      "mpn": null,
-      "qty": 5,
-      "entered": "6/3/2026",
-      "receipt": "6/30/2026"
-    },
-    {
-      "poNumber": "PO26000421",
-      "vendor": "OnBoard Circuits, Inc",
-      "status": "Pending Receipt",
-      "itemId": "Z-100-PESD-R-AVT-BODY2-AC",
-      "description": "AVT AC BODY BOARD 2",
       "manufacturer": null,
       "mpn": null,
       "qty": 5,
@@ -240,6 +218,30 @@
       "status": "Pending Receipt",
       "itemId": "Z-100-PESD-VCI-HC",
       "description": "VOLTAGE SOURCE LINE TERMINATION HIGH CURRENT BOARD",
+      "manufacturer": null,
+      "mpn": null,
+      "qty": 5,
+      "entered": "6/3/2026",
+      "receipt": "6/30/2026"
+    },
+    {
+      "poNumber": "PO26000421",
+      "vendor": "OnBoard Circuits, Inc",
+      "status": "Pending Receipt",
+      "itemId": "Z-100-PESD-R-AVT-BODY1-4WIRE",
+      "description": "AVT 4WIRE BODY BOARD 1",
+      "manufacturer": null,
+      "mpn": null,
+      "qty": 5,
+      "entered": "6/3/2026",
+      "receipt": "6/30/2026"
+    },
+    {
+      "poNumber": "PO26000421",
+      "vendor": "OnBoard Circuits, Inc",
+      "status": "Pending Receipt",
+      "itemId": "Z-100-PESD-R-AVT-BODY2-AC",
+      "description": "AVT AC BODY BOARD 2",
       "manufacturer": null,
       "mpn": null,
       "qty": 5,
@@ -346,18 +348,6 @@
       "poNumber": "PO26000416",
       "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
       "status": "Pending Receipt",
-      "itemId": "Z-100-PESD-R-AVT-BODY2-DC",
-      "description": "AVT DC BODY BOARD 2",
-      "manufacturer": null,
-      "mpn": null,
-      "qty": 100,
-      "entered": "6/2/2026",
-      "receipt": "8/11/2026"
-    },
-    {
-      "poNumber": "PO26000416",
-      "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
-      "status": "Pending Receipt",
       "itemId": "Z-100-PESD-R-AVT-BODY2-ACS",
       "description": "AVT BODY BOARD 2 FOR ACS",
       "manufacturer": null,
@@ -384,6 +374,18 @@
       "status": "Pending Receipt",
       "itemId": "Z-100-PESD-R-AVT-BODY1-2WIRE",
       "description": "AVT 2WIRE BODY BOARD 1",
+      "manufacturer": null,
+      "mpn": null,
+      "qty": 100,
+      "entered": "6/2/2026",
+      "receipt": "8/11/2026"
+    },
+    {
+      "poNumber": "PO26000416",
+      "vendor": "FASTLINK ELECTRONICS (CN) CO., LIMITED",
+      "status": "Pending Receipt",
+      "itemId": "Z-100-PESD-R-AVT-BODY2-DC",
+      "description": "AVT DC BODY BOARD 2",
       "manufacturer": null,
       "mpn": null,
       "qty": 100,
