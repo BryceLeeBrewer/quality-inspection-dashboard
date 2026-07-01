@@ -421,4 +421,10 @@ async function loadData() {
   } catch (err) {
     ['hold','incoming'].forEach(t => { document.getElementById('loading-'+t).style.display = 'none'; });
     document.getElementById('pane-hold').insertAdjacentHTML('afterbegin',
-      '<div class="error-banner">Failed to load data.json: ' + err.message + '.</div>'
+      '<div class="error-banner">Failed to load data.json: ' + err.message + '.</div>'    );
+  }
+}
+loadData();
+</script>
+</body>
+</html>
