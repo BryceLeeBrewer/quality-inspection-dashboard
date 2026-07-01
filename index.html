@@ -112,8 +112,8 @@
           <th onclick="sortHold('description')">Description <span class="sort-icon"></span></th>
           <th onclick="sortHold('qty')" style="text-align:right">Qty in Hold <span class="sort-icon"></span></th>
           <th onclick="sortHold('avail')" style="text-align:right">Qty Available <span class="sort-icon"></span></th>
-          <th onclick="sortHold('rate_per_month')" style="text-align:right">Rate/mo <span class="sort-icon"></span></th>
-          <th onclick="sortHold('daysUntilOut')">Est. Time Until Out of Available Inventory <span class="sort-icon"></span></th>
+          <th onclick="sortHold('rate_per_month')" style="text-align:right">Usage/Month <span class="sort-icon"></span></th>
+          <th onclick="sortHold('daysUntilOut')" style="max-width:120px;white-space:normal">Est. Time Until Out of Available Inventory <span class="sort-icon"></span></th>
           <th onclick="sortHold('received')">Date Received <span class="sort-icon"></span></th>
           <th onclick="sortHold('daysInBin')" style="text-align:right">Days in Bin <span class="sort-icon"></span></th>
           <th>Staleness</th>
@@ -421,10 +421,4 @@ async function loadData() {
   } catch (err) {
     ['hold','incoming'].forEach(t => { document.getElementById('loading-'+t).style.display = 'none'; });
     document.getElementById('pane-hold').insertAdjacentHTML('afterbegin',
-      '<div class="error-banner">Failed to load data.json: ' + err.message + '.</div>');
-  }
-}
-loadData();
-</script>
-</body>
-</html>
+      '<div class="error-banner">Failed to load data.json: ' + err.message + '.</div>'
